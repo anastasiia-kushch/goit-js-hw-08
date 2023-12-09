@@ -89,14 +89,28 @@ for (const image of images) {
   list.appendChild(listItem);
 }
 
+let modal;
+
 list.addEventListener('click', function (event) {
-    event.preventDefault();
+  event.preventDefault();
 
-    const clickedElement = event.target;
-    if(clickedElement.classList.contains('gallery-image')) {
-        console.log(clickedElement.dataset.source);
-    }
+  const clickedElement = event.target;
+  if (clickedElement.classList.contains('gallery-image')) {
+    const largeImageSrc = clickedElement.dataset.source;
+    const altText = clickedElement.alt;
 
-    const modalWindow = basicLightbox.create();
-    modalWindow.show();
-})
+    modal = basicLightbox.create(`
+      <img src="${largeImageSrc}" alt="${altText}"/>
+    `);
+    modal.show();
+
+    document.addEventListener('keydown', handleKeyPress);
+  }
+});
+
+function handleKeyPress(event) {
+  if (event.code === 'Escape' && modal) {
+    modal.close();
+    document.removeEventListener('keydown', handleKeyPress);
+  }
+}
