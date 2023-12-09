@@ -1,3 +1,5 @@
+import * as basicLightbox from 'basiclightbox';
+
 const images = [
   {
     preview:
@@ -81,7 +83,9 @@ for (const image of images) {
   img.setAttribute('alt', image.description);
 
   img.addEventListener('click', function (event) {
-    event.preventDefault();
+    if (event.target.tagName === 'IMG') {
+      event.preventDefault();
+    }
   });
 
   link.append(img);
@@ -89,14 +93,28 @@ for (const image of images) {
   list.appendChild(listItem);
 }
 
-list.addEventListener('click', function (event) {
-    event.preventDefault();
+// list.addEventListener('click', function (event) {
+//   event.preventDefault();
+//   const clickedImage = event.target;
 
-    const clickedElement = event.target;
-    if(clickedElement.classList.contains('gallery-image')) {
-        console.log(clickedElement.dataset.source);
-    }
+//   if (clickedImage.tagName === 'IMG') {
 
-    const modalWindow = basicLightbox.create();
-    modalWindow.show();
-})
+//     const largeImageSrc = clickedImage.dataset.source;
+//     const altImage = clickedImage.alt;
+
+//     const modal = basicLightbox.create(`<img src=${largeImageSrc} alt=${altImage}>`)
+
+//     modal.show();
+
+//     document.addEventListener('keydown', handleKeyPress);
+
+//     function handleKeyPress(event) {
+//       if (event.code === 'Escape') {
+//         modal.close();
+
+//         document.removeEventListener('keydown', handleKeyPress);
+//       }
+//     }
+
+//   }
+// });
