@@ -64,52 +64,46 @@ const images = [
   },
 ];
 
-const list = document.querySelector('.gallery');
+const listEl = document.querySelector('.gallery');
 
-for (const image of images) {
-  const listItem = document.createElement('li');
-  listItem.classList.add('gallery-item');
+const listItem = images
+  .map(
+    (image) => `<li class="gallery-item">
+  <a class="gallery-link" href="${image.preview}">
+    <img
+      class="gallery-image"
+      src="${image.preview}"
+      data-source="${image.original}"
+      alt="${image.description}"
+    />
+  </a>
+</li>`
+  )
+  .join('');
 
-  const link = document.createElement('a');
-  link.classList.add('gallery-item');
-  link.setAttribute('href', image.preview);
-
-  const img = document.createElement('img');
-  img.classList.add('gallery-image');
-  img.src = image.preview;
-  img.dataset.source = image.original;
-  img.setAttribute('alt', image.description);
-
-  img.addEventListener('click', function (event) {
-    event.preventDefault();
-  });
-
-  link.append(img);
-  listItem.append(link);
-  list.appendChild(listItem);
-}
+listEl.insertAdjacentHTML('beforeend', listItem);
 
 let modal;
 
-list.addEventListener('click', function (event) {
+listEl.addEventListener('click', function (event) {
   event.preventDefault();
 
   const clickedElement = event.target;
-  if (clickedElement.classList.contains('gallery-image')) {
-    const largeImageSrc = clickedElement.dataset.source;
-    const altText = clickedElement.alt;
+  if (clickedElement.nodeName !== 'IMG') return;
 
-    modal = basicLightbox.create(`
-      <img src="${largeImageSrc}" alt="${altText}"/>
-    `);
-    modal.show();
+  const largeImageSrc = clickedElement.dataset.source;
+  const altText = clickedElement.alt;
 
-    document.addEventListener('keydown', handleKeyPress);
-  }
+  modal = basicLightbox.create(`
+    <img src="${largeImageSrc}" alt="${altText}"/>
+  `);
+  modal.show();
+
+  document.addEventListener('keydown', handleKeyPress);
 });
 
 function handleKeyPress(event) {
-  if (event.code === 'Escape' && modal) {
+  if (event.code === 'Escape') {
     modal.close();
     document.removeEventListener('keydown', handleKeyPress);
   }
